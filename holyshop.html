@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfect Smell | Parfums & Beauté</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   RESET & ROOT
+   ========================================================= */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c9a84c;
+  --gold-light:#e8cc7a;
+  --dark:#0d0d0d;
+  --dark2:#1a1a1a;
+  --dark3:#242424;
+  --cream:#faf7f2;
+  --cream2:#f2ede4;
+  --text:#2c2c2c;
+  --muted:#888;
+  --green:#2a7a3b;
+  --green-light:#3da653;
+  --red:#c0392b;
+  --white:#fff;
+  --shadow:0 4px 30px rgba(0,0,0,.12);
+  --shadow-lg:0 12px 60px rgba(0,0,0,.18);
+  --radius:12px;
+  --radius-sm:6px;
+  --trans:.25s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;min-height:100vh}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+button{font-family:'Jost',sans-serif;cursor:pointer;border:none;background:none}
+
+/* =========================================================
+   NOTIFICATIONS TOAST
+   ========================================================= */
+#toast-container{position:fixed;top:80px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--dark);color:var(--white);padding:12px 20px;border-radius:var(--radius-sm);font-size:14px;border-left:4px solid var(--gold);animation:slideIn .3s ease;max-width:280px;box-shadow:var(--shadow)}
+.toast.success{border-left-color:var(--green-light)}
+.toast.error{border-left-color:var(--red)}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+
+/* =========================================================
+   HEADER / NAV
+   ========================================================= */
+.header{background:var(--dark);position:sticky;top:0;z-index:1000;border-bottom:1px solid rgba(201,168,76,.25)}
+.nav-top{display:flex;align-items:center;gap:16px;padding:14px 40px;justify-content:space-between}
+.logo{font-family:'Playfair Display',serif;font-size:26px;color:var(--white);letter-spacing:2px;font-weight:700}
+.logo span{color:var(--gold)}
+.search-wrap{flex:1;max-width:460px;position:relative}
+.search-wrap input{width:100%;padding:10px 46px 10px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:var(--white);font-size:14px;font-family:'Jost',sans-serif;transition:var(--trans)}
+.search-wrap input::placeholder{color:rgba(255,255,255,.4)}
+.search-wrap input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.1)}
+.search-wrap button{position:absolute;right:4px;top:50%;transform:translateY(-50%);padding:6px 14px;border-radius:50px;background:var(--gold);color:var(--dark);font-size:13px;font-weight:600}
+.nav-icons{display:flex;align-items:center;gap:24px}
+.nav-icon-btn{display:flex;flex-direction:column;align-items:center;gap:3px;color:rgba(255,255,255,.7);transition:var(--trans);position:relative}
+.nav-icon-btn:hover{color:var(--gold)}
+.nav-icon-btn svg{width:22px;height:22px;fill:currentColor}
+.nav-icon-btn span{font-size:10px;font-weight:500}
+.badge{position:absolute;top:-6px;right:-8px;background:var(--gold);color:var(--dark);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.nav-bottom{background:var(--dark2);border-top:1px solid rgba(255,255,255,.06)}
+.nav-links{display:flex;align-items:center;padding:0 40px;gap:32px}
+.nav-links > a,.nav-links > .nav-dropdown{padding:12px 0;font-size:14px;color:rgba(255,255,255,.7);font-weight:500;transition:var(--trans);position:relative;cursor:pointer}
+.nav-links > a:hover,.nav-links > .nav-dropdown:hover{color:var(--gold)}
+.nav-links > a.active{color:var(--gold)}
+.nav-links > a::after,.nav-links > .nav-dropdown::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--gold);transition:var(--trans)}
+.nav-links > a:hover::after,.nav-links > .nav-dropdown:hover::after{width:100%}
+.nav-dropdown{position:relative}
+.dropdown-menu{position:absolute;top:calc(100% + 1px);left:-20px;background:var(--dark2);min-width:220px;border:1px solid rgba(201,168,76,.2);border-radius:var(--radius-sm);padding:8px 0;opacity:0;pointer-events:none;transform:translateY(8px);transition:var(--trans);z-index:100}
+.nav-dropdown:hover .dropdown-menu{opacity:1;pointer-events:all;transform:translateY(0)}
+.dropdown-menu a{display:block;padding:10px 20px;font-size:13px;color:rgba(255,255,255,.7);transition:var(--trans)}
+.dropdown-menu a:hover{color:var(--gold);background:rgba(201,168,76,.07)}
+.dropdown-menu .cat-label{padding:10px 20px 6px;font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:600;border-top:1px solid rgba(255,255,255,.06)}
+.dropdown-menu .cat-label:first-child{border-top:none}
+
+/* =========================================================
+   PAGES (SPA)
+   ========================================================= */
+.page{display:none;min-height:70vh;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* =========================================================
+   HERO BANNER
+   ========================================================= */
+.hero{background:linear-gradient(135deg,var(--dark) 0%,var(--dark3) 50%,#1c1208 100%);padding:70px 40px;display:flex;align-items:center;gap:60px;overflow:hidden;position:relative}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(201,168,76,.12) 0%,transparent 60%)}
+.hero-text{flex:1;position:relative;z-index:1}
+.hero-tag{display:inline-block;background:rgba(201,168,76,.15);color:var(--gold);padding:6px 14px;border-radius:50px;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;border:1px solid rgba(201,168,76,.3)}
+.hero h1{font-family:'Playfair Display',serif;font-size:52px;color:var(--white);line-height:1.15;margin-bottom:20px}
+.hero h1 em{color:var(--gold);font-style:italic}
+.hero p{color:rgba(255,255,255,.6);font-size:16px;line-height:1.7;max-width:420px;margin-bottom:32px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{background:var(--gold);color:var(--dark);padding:13px 30px;border-radius:50px;font-weight:600;font-size:14px;letter-spacing:.5px;transition:var(--trans);display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,.35)}
+.btn-outline{background:transparent;color:var(--white);padding:13px 30px;border-radius:50px;font-weight:500;font-size:14px;border:1.5px solid rgba(255,255,255,.3);transition:var(--trans);display:inline-flex;align-items:center;gap:8px}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.hero-visual{flex:0 0 380px;position:relative;z-index:1;display:flex;flex-direction:column;gap:12px}
+.hero-card{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:var(--radius);padding:16px;backdrop-filter:blur(10px)}
+.hero-card-label{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.hero-card-val{font-size:28px;font-family:'Playfair Display',serif;color:var(--white);font-weight:700}
+.hero-card-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+.hero-cards-row{display:flex;gap:12px}
+.hero-cards-row .hero-card{flex:1}
+
+/* =========================================================
+   SECTION GENERIC
+   ========================================================= */
+.section{padding:60px 40px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+.section-title{font-family:'Playfair Display',serif;font-size:32px;color:var(--dark)}
+.section-title span{color:var(--gold)}
+.section-link{font-size:13px;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:6px;transition:var(--trans)}
+.section-link:hover{gap:10px}
+
+/* =========================================================
+   PRODUCT GRID / CARDS
+   ========================================================= */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:24px}
+.product-card{background:var(--white);border-radius:var(--radius);overflow:hidden;transition:var(--trans);box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative;cursor:pointer}
+.product-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.product-card-img{width:100%;aspect-ratio:1/1;object-fit:contain;padding:20px;background:var(--cream)}
+.product-card-body{padding:14px 16px 16px}
+.product-card-brand{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.product-card-name{font-size:15px;font-weight:600;margin-bottom:4px;line-height:1.3}
+.product-card-sub{font-size:12px;color:var(--muted);margin-bottom:10px}
+.product-card-footer{display:flex;align-items:center;justify-content:space-between}
+.product-price{font-size:17px;font-weight:700;color:var(--red)}
+.product-actions{display:flex;gap:8px}
+.btn-heart{width:34px;height:34px;border-radius:50%;border:1.5px solid #e0e0e0;display:flex;align-items:center;justify-content:center;background:var(--cream);transition:var(--trans)}
+.btn-heart:hover,.btn-heart.active{border-color:var(--red);background:#fff0f0}
+.btn-heart svg{width:16px;height:16px;fill:var(--muted);transition:var(--trans)}
+.btn-heart.active svg,.btn-heart:hover svg{fill:var(--red)}
+.btn-cart{background:var(--dark);color:var(--white);padding:7px 14px;border-radius:50px;font-size:12px;font-weight:600;transition:var(--trans)}
+.btn-cart:hover{background:var(--gold);color:var(--dark)}
+.product-badge{position:absolute;top:12px;left:12px;background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;padding:3px 10px;border-radius:50px;text-transform:uppercase;letter-spacing:.5px}
+
+/* =========================================================
+   CATEGORY STRIP
+   ========================================================= */
+.categories{padding:40px 40px 0}
+.cat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.cat-card{background:var(--dark);border-radius:var(--radius);padding:28px 24px;cursor:pointer;transition:var(--trans);border:1px solid rgba(201,168,76,.15);position:relative;overflow:hidden}
+.cat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at bottom right,rgba(201,168,76,.18) 0%,transparent 60%);opacity:0;transition:var(--trans)}
+.cat-card:hover::before{opacity:1}
+.cat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.cat-card-icon{font-size:28px;margin-bottom:12px}
+.cat-card-title{font-family:'Playfair Display',serif;color:var(--white);font-size:18px;margin-bottom:4px}
+.cat-card-count{font-size:12px;color:var(--gold)}
+
+/* =========================================================
+   PROMO BANNER
+   ========================================================= */
+.promo-banner{margin:0 40px;background:linear-gradient(135deg,var(--dark3),var(--dark));border-radius:var(--radius);padding:40px 50px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(201,168,76,.2)}
+.promo-text .label{color:var(--gold);font-size:12px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.promo-text h2{font-family:'Playfair Display',serif;color:var(--white);font-size:28px;margin-bottom:8px}
+.promo-text p{color:rgba(255,255,255,.6);font-size:14px}
+
+/* =========================================================
+   CART PAGE
+   ========================================================= */
+.cart-layout{display:grid;grid-template-columns:1fr 340px;gap:30px;padding:40px;max-width:1100px;margin:0 auto}
+.cart-items-wrap{background:var(--white);border-radius:var(--radius);padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.cart-item{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid var(--cream2);align-items:center}
+.cart-item:last-child{border-bottom:none}
+.cart-item img{width:80px;height:80px;object-fit:contain;background:var(--cream);border-radius:var(--radius-sm);flex-shrink:0}
+.cart-item-info{flex:1}
+.cart-item-brand{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.cart-item-name{font-size:15px;font-weight:600;margin:3px 0}
+.cart-item-sub{font-size:12px;color:var(--muted)}
+.cart-item-actions{display:flex;align-items:center;gap:12px;margin-top:10px}
+.qty-ctrl{display:flex;align-items:center;gap:8px;border:1.5px solid #e0e0e0;border-radius:50px;padding:4px 10px}
+.qty-ctrl button{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--dark);transition:var(--trans)}
+.qty-ctrl button:hover{background:var(--cream)}
+.qty-val{font-weight:600;min-width:20px;text-align:center;font-size:15px}
+.btn-remove{color:var(--red);font-size:12px;font-weight:500;transition:var(--trans)}
+.btn-remove:hover{text-decoration:underline}
+.cart-item-price{font-size:17px;font-weight:700;color:var(--red);white-space:nowrap}
+.cart-summary{background:var(--white);border-radius:var(--radius);padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);height:fit-content;position:sticky;top:100px}
+.cart-summary h3{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--cream2)}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:12px;font-size:15px}
+.summary-row.total{font-weight:700;font-size:17px;border-top:1px solid var(--cream2);padding-top:14px;margin-top:14px}
+.summary-row.total span:last-child{color:var(--red)}
+.btn-checkout{width:100%;padding:16px;background:var(--gold);color:var(--dark);border-radius:var(--radius-sm);font-weight:700;font-size:15px;margin-top:18px;transition:var(--trans);letter-spacing:.5px}
+.btn-checkout:hover{background:var(--gold-light);transform:translateY(-1px)}
+.empty-state{text-align:center;padding:80px 40px}
+.empty-state svg{width:64px;height:64px;fill:var(--muted);margin-bottom:20px;opacity:.5}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:10px;color:var(--dark)}
+.empty-state p{color:var(--muted);font-size:15px;margin-bottom:24px}
+
+/* =========================================================
+   FAVORITES PAGE
+   ========================================================= */
+.fav-page{padding:40px;max-width:1200px;margin:0 auto}
+
+/* =========================================================
+   AUTH PAGES
+   ========================================================= */
+.auth-layout{display:flex;min-height:70vh;align-items:center;justify-content:center;padding:40px}
+.auth-card{background:var(--white);border-radius:var(--radius);padding:44px 40px;width:100%;max-width:420px;box-shadow:var(--shadow)}
+.auth-card h2{font-family:'Playfair Display',serif;font-size:28px;margin-bottom:8px;text-align:center}
+.auth-card .auth-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:30px}
+.auth-card .gold-line{width:40px;height:3px;background:var(--gold);border-radius:2px;margin:10px auto 28px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.form-group input{width:100%;padding:12px 16px;border:1.5px solid #e0e0e0;border-radius:var(--radius-sm);font-size:14px;font-family:'Jost',sans-serif;transition:var(--trans);background:var(--cream)}
+.form-group input:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.auth-options{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;font-size:13px}
+.auth-options label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--muted)}
+.auth-link{color:var(--gold);font-weight:600;cursor:pointer;transition:var(--trans)}
+.auth-link:hover{text-decoration:underline}
+.btn-auth{width:100%;padding:14px;background:var(--dark);color:var(--white);border-radius:var(--radius-sm);font-weight:600;font-size:15px;transition:var(--trans);margin-bottom:16px}
+.btn-auth:hover{background:var(--gold);color:var(--dark)}
+.auth-footer{text-align:center;font-size:13px;color:var(--muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* =========================================================
+   PROFILE PAGE
+   ========================================================= */
+.profile-layout{display:grid;grid-template-columns:260px 1fr;gap:30px;padding:40px;max-width:1100px;margin:0 auto}
+.profile-sidebar{background:var(--white);border-radius:var(--radius);padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);height:fit-content}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:30px;color:var(--dark);font-weight:700;margin:0 auto 14px}
+.profile-name{text-align:center;font-weight:600;font-size:17px;margin-bottom:4px}
+.profile-email{text-align:center;font-size:13px;color:var(--muted);margin-bottom:24px}
+.profile-nav{display:flex;flex-direction:column;gap:4px}
+.profile-nav-btn{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;color:var(--text);transition:var(--trans);cursor:pointer;background:none;border:none;width:100%;text-align:left}
+.profile-nav-btn:hover,.profile-nav-btn.active{background:var(--cream);color:var(--gold)}
+.profile-nav-btn svg{width:18px;height:18px;fill:currentColor;flex-shrink:0}
+.profile-content{background:var(--white);border-radius:var(--radius);padding:32px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.profile-section{display:none}
+.profile-section.active{display:block}
+.profile-section h3{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px}
+.profile-section .section-desc{color:var(--muted);font-size:14px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--cream2)}
+.btn-danger{background:var(--red);color:var(--white);padding:11px 22px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;transition:var(--trans)}
+.btn-danger:hover{background:#a93226}
+.btn-save{background:var(--dark);color:var(--white);padding:11px 22px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;transition:var(--trans)}
+.btn-save:hover{background:var(--gold);color:var(--dark)}
+.btn-group{display:flex;gap:12px;margin-top:24px}
+.order-item{display:flex;gap:14px;padding:16px;background:var(--cream);border-radius:var(--radius-sm);margin-bottom:12px;align-items:center}
+.order-item img{width:60px;height:60px;object-fit:contain;background:var(--white);border-radius:var(--radius-sm)}
+.order-info{flex:1}
+.order-name{font-weight:600;font-size:14px}
+.order-sub{font-size:12px;color:var(--muted)}
+.order-price{font-weight:700;color:var(--red)}
+
+/* =========================================================
+   FORGOT PASSWORD
+   ========================================================= */
+.step-indicator{display:flex;gap:8px;justify-content:center;margin-bottom:28px}
+.step{width:32px;height:4px;border-radius:2px;background:var(--cream2)}
+.step.active{background:var(--gold)}
+
+/* =========================================================
+   PRODUCT CATEGORY PAGES FILTER
+   ========================================================= */
+.cat-page-layout{display:flex;gap:28px;padding:40px}
+.cat-filters{width:220px;flex-shrink:0}
+.filter-card{background:var(--white);border-radius:var(--radius);padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:16px}
+.filter-title{font-weight:700;font-size:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--cream2)}
+.filter-opt{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;font-size:14px}
+.filter-opt input{cursor:pointer;accent-color:var(--gold)}
+.cat-products{flex:1}
+.cat-products-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.cat-products-count{font-size:14px;color:var(--muted)}
+.sort-select{padding:8px 14px;border:1.5px solid #e0e0e0;border-radius:var(--radius-sm);font-size:14px;font-family:'Jost',sans-serif;cursor:pointer;background:var(--white)}
+.sort-select:focus{outline:none;border-color:var(--gold)}
+
+/* =========================================================
+   PAGE HEADER (breadcrumb area)
+   ========================================================= */
+.page-hero{background:var(--dark);padding:40px;display:flex;align-items:flex-end;gap:16px}
+.page-hero h1{font-family:'Playfair Display',serif;color:var(--white);font-size:36px}
+.page-hero .breadcrumb{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:6px}
+.page-hero .breadcrumb a{color:var(--gold);cursor:pointer}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+footer{background:var(--dark);color:rgba(255,255,255,.65);padding:56px 40px 24px;margin-top:auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand .logo{font-size:24px;display:block;margin-bottom:14px}
+.footer-brand p{font-size:14px;line-height:1.7;max-width:240px;color:rgba(255,255,255,.5)}
+.footer-col h4{color:var(--white);font-size:14px;font-weight:600;margin-bottom:18px;text-transform:uppercase;letter-spacing:1px}
+.footer-col ul{display:flex;flex-direction:column;gap:10px}
+.footer-col ul li a{font-size:14px;color:rgba(255,255,255,.55);transition:var(--trans);cursor:pointer}
+.footer-col ul li a:hover{color:var(--gold)}
+.footer-social-links{display:flex;gap:14px;margin-top:16px}
+.social-link{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;transition:var(--trans)}
+.social-link:hover{border-color:var(--gold);background:rgba(201,168,76,.12)}
+.social-link svg{width:17px;height:17px;fill:rgba(255,255,255,.6)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:rgba(255,255,255,.35)}
+
+/* =========================================================
+   RESPONSIVE (basic)
+   ========================================================= */
+@media(max-width:900px){
+  .nav-top{padding:12px 20px;gap:10px}
+  .section,.categories,.cat-page-layout,.cart-layout,.profile-layout,.fav-page{padding:24px}
+  .hero{flex-direction:column;padding:40px 24px;gap:30px}
+  .hero-visual{flex:unset;width:100%}
+  .hero h1{font-size:34px}
+  .cat-strip{grid-template-columns:1fr 1fr}
+  .cart-layout,.profile-layout{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .promo-banner{flex-direction:column;gap:20px;text-align:center}
+}
+
+/* =========================================================
+   MAQUILLAGE PAGE SPECIFICS
+   ========================================================= */
+.page-bg-cream{background:var(--cream)}
+
+/* =========================================================
+   MODAL OVERLAY (simple checkout)
+   ========================================================= */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9998;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:var(--radius);padding:40px;max-width:480px;width:100%;position:relative}
+.modal-close{position:absolute;top:16px;right:20px;font-size:22px;cursor:pointer;color:var(--muted)}
+.modal-close:hover{color:var(--dark)}
+.modal h3{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:6px}
+.modal .success-icon{width:60px;height:60px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
+.modal.success-modal{text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ============= TOAST CONTAINER ============= -->
+<div id="toast-container"></div>
+
+<!-- ============= HEADER ============= -->
+<header class="header">
+  <div class="nav-top">
+    <a class="logo" onclick="goPage('home')">Perfect<span>SMELL</span></a>
+    <div class="search-wrap">
+      <input type="text" id="search-input" placeholder="Recherchez un parfum, une marque..." onkeydown="if(event.key==='Enter')doSearch()">
+      <button onclick="doSearch()">Chercher</button>
+    </div>
+    <div class="nav-icons">
+      <div class="nav-icon-btn" onclick="goPage('favorites')" style="position:relative">
+        <svg viewBox="0 0 24 24"><path d="m12.75 20.66 6.184-7.098c2.677-2.884 2.559-6.506.754-8.705-.898-1.095-2.206-1.816-3.72-1.855-1.293-.034-2.652.43-3.963 1.442-1.315-1.012-2.678-1.476-3.973-1.442-1.515.04-2.825.76-3.724 1.855-1.806 2.201-1.915 5.823.772 8.706l6.183 7.097c.19.216.46.34.743.34a.985.985 0 0 0 .743-.34Z"/></svg>
+        <span>Favoris</span>
+        <span class="badge" id="fav-badge" style="display:none">0</span>
+      </div>
+      <div class="nav-icon-btn" onclick="goPage('cart')" style="position:relative">
+        <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M14 7h-4v3a1 1 0 0 1-2 0V7H6a1 1 0 0 0-.997.923l-.917 11.924A2 2 0 0 0 6.08 22h11.84a2 2 0 0 0 1.994-2.153l-.917-11.924A1 1 0 0 0 18 7h-2v3a1 1 0 1 1-2 0V7Zm-2-3a2 2 0 0 0-2 2v1H8V6a4 4 0 0 1 8 0v1h-2V6a2 2 0 0 0-2-2Z" clip-rule="evenodd"/></svg>
+        <span>Panier</span>
+        <span class="badge" id="cart-badge" style="display:none">0</span>
+      </div>
+    </div>
+  </div>
+  <nav class="nav-bottom">
+    <div class="nav-links">
+      <a id="nav-home" onclick="goPage('home')">Accueil</a>
+      <div class="nav-dropdown">
+        <span>Parfums ▾</span>
+        <div class="dropdown-menu">
+          <div class="cat-label">Pour elle</div>
+          <a onclick="goPage('edp-femme')">Eau de parfum femme</a>
+          <a onclick="goPage('edt-femme')">Eau de toilette femme</a>
+          <div class="cat-label">Pour lui</div>
+          <a onclick="goPage('edp-homme')">Eau de parfum homme</a>
+          <a onclick="goPage('edt-homme')">Eau de toilette homme</a>
+        </div>
+      </div>
+      <a onclick="goPage('maquillage')">Maquillage</a>
+      <a onclick="goPage('favorites')">Mes favoris</a>
+      <a onclick="goPage('cart')">Mon panier</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ============================================================
+     PAGE: HOME
+     ============================================================ -->
+<div class="page active" id="page-home">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-tag">✦ Nouvelle collection 2025</div>
+      <h1>L'art du <em>parfum</em><br>à portée de main</h1>
+      <p>Découvrez notre sélection exclusive de parfums et produits de beauté, soigneusement choisis pour sublimer chaque instant.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="goPage('edp-femme')">Explorer les parfums →</button>
+        <button class="btn-outline" onclick="goPage('maquillage')">Maquillage</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card" style="background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.3)">
+        <div class="hero-card-label">Bestseller du mois</div>
+        <div class="hero-card-val">Chopard</div>
+        <div class="hero-card-sub">Oud Malaki — Eau de Parfum</div>
+      </div>
+      <div class="hero-cards-row">
+        <div class="hero-card">
+          <div class="hero-card-label">Produits</div>
+          <div class="hero-card-val" style="font-size:22px">120+</div>
+          <div class="hero-card-sub">Références disponibles</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-label">Livraison</div>
+          <div class="hero-card-val" style="font-size:22px;color:var(--gold)">Gratuite</div>
+          <div class="hero-card-sub">Dès 50€ d'achat</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="categories">
+    <div class="cat-strip">
+      <div class="cat-card" onclick="goPage('edp-femme')">
+        <div class="cat-card-icon">🌸</div>
+        <div class="cat-card-title">Parfum Femme</div>
+        <div class="cat-card-count">Eau de parfum & toilette</div>
+      </div>
+      <div class="cat-card" onclick="goPage('edp-homme')">
+        <div class="cat-card-icon">🕶️</div>
+        <div class="cat-card-title">Parfum Homme</div>
+        <div class="cat-card-count">Eau de parfum & toilette</div>
+      </div>
+      <div class="cat-card" onclick="goPage('maquillage')">
+        <div class="cat-card-icon">💄</div>
+        <div class="cat-card-title">Maquillage</div>
+        <div class="cat-card-count">Teint, yeux, lèvres</div>
+      </div>
+      <div class="cat-card" onclick="goPage('home')">
+        <div class="cat-card-icon">⭐</div>
+        <div class="cat-card-title">Meilleures ventes</div>
+        <div class="cat-card-count">Nos incontournables</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED PRODUCTS -->
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">Coups de <span>cœur</span></h2>
+      <a class="section-link" onclick="goPage('edp-femme')">Voir tout →</a>
+    </div>
+    <div class="products-grid" id="featured-grid"></div>
+  </div>
+
+  <!-- PROMO BANNER -->
+  <div class="promo-banner">
+    <div class="promo-text">
+      <div class="label">Offre exclusive</div>
+      <h2>Livraison gratuite dès 50€</h2>
+      <p>Sur toute la France métropolitaine, livraison en 2-3 jours ouvrés</p>
+    </div>
+    <button class="btn-primary" onclick="goPage('edp-femme')">Profiter de l'offre →</button>
+  </div>
+
+  <!-- MORE PRODUCTS -->
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">Parfums <span>homme</span></h2>
+      <a class="section-link" onclick="goPage('edp-homme')">Voir tout →</a>
+    </div>
+    <div class="products-grid" id="homme-grid"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: CATEGORY (générique, remplie dynamiquement)
+     ============================================================ -->
+<div class="page" id="page-category">
+  <div class="page-hero" id="cat-page-hero">
+    <div>
+      <div class="breadcrumb"><a onclick="goPage('home')">Accueil</a> › <span id="cat-breadcrumb"></span></div>
+      <h1 id="cat-title"></h1>
+    </div>
+  </div>
+  <div class="cat-page-layout">
+    <div class="cat-filters">
+      <div class="filter-card">
+        <div class="filter-title">Marques</div>
+        <div id="brand-filters"></div>
+      </div>
+      <div class="filter-card">
+        <div class="filter-title">Prix</div>
+        <div class="filter-opt"><input type="checkbox" id="p1" onchange="applyFilters()"><label for="p1">Moins de 30€</label></div>
+        <div class="filter-opt"><input type="checkbox" id="p2" onchange="applyFilters()"><label for="p2">30€ – 60€</label></div>
+        <div class="filter-opt"><input type="checkbox" id="p3" onchange="applyFilters()"><label for="p3">Plus de 60€</label></div>
+      </div>
+    </div>
+    <div class="cat-products">
+      <div class="cat-products-header">
+        <span class="cat-products-count" id="cat-count">0 produit(s)</span>
+        <select class="sort-select" id="sort-sel" onchange="applyFilters()">
+          <option value="default">Trier par défaut</option>
+          <option value="price-asc">Prix croissant</option>
+          <option value="price-desc">Prix décroissant</option>
+          <option value="alpha">A → Z</option>
+        </select>
+      </div>
+      <div class="products-grid" id="cat-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: CART
+     ============================================================ -->
+<div class="page" id="page-cart">
+  <div class="page-hero">
+    <div>
+      <div class="breadcrumb"><a onclick="goPage('home')">Accueil</a> › Panier</div>
+      <h1>Mon Panier</h1>
+    </div>
+  </div>
+  <div class="cart-layout">
+    <div class="cart-items-wrap">
+      <div id="cart-items-container"></div>
+    </div>
+    <div class="cart-summary" id="cart-summary-card">
+      <h3>Récapitulatif</h3>
+      <div class="summary-row"><span>Sous-total</span><span id="subtotal">0,00€</span></div>
+      <div class="summary-row"><span>Livraison</span><span style="color:var(--green)">Gratuite</span></div>
+      <div class="summary-row total"><span>Total</span><span id="cart-total">0,00€</span></div>
+      <button class="btn-checkout" onclick="checkout()">Commander →</button>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px;text-align:center">Paiement sécurisé · Livraison 2-3j</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: FAVORITES
+     ============================================================ -->
+<div class="page" id="page-favorites">
+  <div class="page-hero">
+    <div>
+      <div class="breadcrumb"><a onclick="goPage('home')">Accueil</a> › Favoris</div>
+      <h1>Mes Favoris</h1>
+    </div>
+  </div>
+  <div class="fav-page">
+    <div class="products-grid" id="fav-grid"></div>
+    <div id="fav-empty" class="empty-state" style="display:none">
+      <svg viewBox="0 0 24 24"><path d="m12.75 20.66 6.184-7.098c2.677-2.884 2.559-6.506.754-8.705-.898-1.095-2.206-1.816-3.72-1.855-1.293-.034-2.652.43-3.963 1.442-1.315-1.012-2.678-1.476-3.973-1.442-1.515.04-2.825.76-3.724 1.855-1.806 2.201-1.915 5.823.772 8.706l6.183 7.097c.19.216.46.34.743.34a.985.985 0 0 0 .743-.34Z"/></svg>
+      <h3>Aucun favori</h3>
+      <p>Ajoutez des produits à vos favoris en cliquant sur le cœur.</p>
+      <button class="btn-primary" onclick="goPage('home')">Découvrir nos produits</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: LOGIN
+     ============================================================ -->
+<div class="page" id="page-login">
+  <div class="auth-layout">
+    <div class="auth-card">
+      <h2>Connexion</h2>
+      <div class="gold-line"></div>
+      <p class="auth-sub">Bon retour ! Connectez-vous à votre compte.</p>
+      <div class="form-group">
+        <label>Adresse e-mail</label>
+        <input type="email" id="login-email" placeholder="votre@email.fr">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="login-pwd" placeholder="••••••••">
+      </div>
+      <div class="auth-options">
+        <label><input type="checkbox"> Se souvenir de moi</label>
+        <span class="auth-link" onclick="goPage('forgot')">Mot de passe oublié ?</span>
+      </div>
+      <button class="btn-auth" onclick="doLogin()">Se connecter</button>
+      <div class="auth-footer">Pas encore de compte ? <span class="auth-link" onclick="goPage('register')">Créer un compte</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: REGISTER
+     ============================================================ -->
+<div class="page" id="page-register">
+  <div class="auth-layout">
+    <div class="auth-card" style="max-width:500px">
+      <h2>Créer un compte</h2>
+      <div class="gold-line"></div>
+      <p class="auth-sub">Rejoignez Holy Shop pour profiter de toutes nos offres.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Prénom</label>
+          <input type="text" id="reg-firstname" placeholder="Prénom">
+        </div>
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" id="reg-lastname" placeholder="Nom">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Adresse e-mail</label>
+        <input type="email" id="reg-email" placeholder="votre@email.fr">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="reg-pwd" placeholder="Minimum 8 caractères">
+      </div>
+      <div class="form-group">
+        <label>Confirmer le mot de passe</label>
+        <input type="password" id="reg-pwd2" placeholder="Confirmer">
+      </div>
+      <button class="btn-auth" onclick="doRegister()">Créer mon compte</button>
+      <div class="auth-footer">Déjà un compte ? <span class="auth-link" onclick="goPage('login')">Se connecter</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: FORGOT PASSWORD
+     ============================================================ -->
+<div class="page" id="page-forgot">
+  <div class="auth-layout">
+    <div class="auth-card">
+      <h2>Mot de passe oublié</h2>
+      <div class="gold-line"></div>
+      <div class="step-indicator">
+        <div class="step active" id="step1-ind"></div>
+        <div class="step" id="step2-ind"></div>
+      </div>
+      <div id="forgot-step1">
+        <p class="auth-sub" style="margin-bottom:20px">Entrez votre e-mail pour recevoir un code de réinitialisation.</p>
+        <div class="form-group">
+          <label>Adresse e-mail</label>
+          <input type="email" id="forgot-email" placeholder="votre@email.fr">
+        </div>
+        <button class="btn-auth" onclick="forgotStep1()">Recevoir le code</button>
+      </div>
+      <div id="forgot-step2" style="display:none">
+        <p class="auth-sub" style="margin-bottom:20px">Un code a été envoyé. Entrez-le ci-dessous et choisissez un nouveau mot de passe.</p>
+        <div class="form-group">
+          <label>Code à 8 caractères</label>
+          <input type="text" id="forgot-code" placeholder="XXXXXXXX" maxlength="8">
+        </div>
+        <div class="form-group">
+          <label>Nouveau mot de passe</label>
+          <input type="password" id="forgot-newpwd" placeholder="Minimum 8 caractères">
+        </div>
+        <div class="form-group">
+          <label>Confirmer</label>
+          <input type="password" id="forgot-newpwd2" placeholder="Confirmer">
+        </div>
+        <button class="btn-auth" onclick="forgotStep2()">Modifier le mot de passe</button>
+      </div>
+      <div class="auth-footer" style="margin-top:16px"><span class="auth-link" onclick="goPage('login')">← Retour à la connexion</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: PROFILE
+     ============================================================ -->
+<div class="page" id="page-profile">
+  <div class="page-hero">
+    <div>
+      <div class="breadcrumb"><a onclick="goPage('home')">Accueil</a> › Mon compte</div>
+      <h1>Mon Compte</h1>
+    </div>
+  </div>
+  <div class="profile-layout">
+    <div class="profile-sidebar">
+      <div class="profile-avatar" id="profile-avatar-letter">?</div>
+      <div class="profile-name" id="profile-sidebar-name">—</div>
+      <div class="profile-email" id="profile-sidebar-email">—</div>
+      <nav class="profile-nav">
+        <button class="profile-nav-btn active" onclick="showProfileSection('info',this)">
+          <svg viewBox="0 0 24 24"><path d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z"/></svg>
+          Informations
+        </button>
+        <button class="profile-nav-btn" onclick="showProfileSection('orders',this)">
+          <svg viewBox="0 0 24 24"><path d="M5 3a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5Zm0 10a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H5Z"/></svg>
+          Commandes
+        </button>
+        <button class="profile-nav-btn" onclick="showProfileSection('favs',this)">
+          <svg viewBox="0 0 24 24"><path d="m12.75 20.66 6.184-7.098c2.677-2.884 2.559-6.506.754-8.705-.898-1.095-2.206-1.816-3.72-1.855-1.293-.034-2.652.43-3.963 1.442-1.315-1.012-2.678-1.476-3.973-1.442-1.515.04-2.825.76-3.724 1.855-1.806 2.201-1.915 5.823.772 8.706l6.183 7.097c.19.216.46.34.743.34a.985.985 0 0 0 .743-.34Z"/></svg>
+          Favoris
+        </button>
+        <button class="profile-nav-btn" style="color:var(--red)" onclick="doLogout()">
+          <svg viewBox="0 0 24 24"><path d="M16 13a1 1 0 0 0-1 1v3H5V7h10v3a1 1 0 1 0 2 0V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3a1 1 0 0 0-1-1Zm4.707-5.293-3-3a1 1 0 0 0-1.414 1.414L17.586 7H10a1 1 0 1 0 0 2h7.586l-1.293 1.293a1 1 0 0 0 1.414 1.414l3-3a1 1 0 0 0 0-1.414Z"/></svg>
+          Se déconnecter
+        </button>
+      </nav>
+    </div>
+    <div class="profile-content">
+      <!-- Info section -->
+      <div class="profile-section active" id="ps-info">
+        <h3>Informations du compte</h3>
+        <p class="section-desc">Modifiez vos informations personnelles</p>
+        <div class="form-row">
+          <div class="form-group"><label>Prénom</label><input type="text" id="prof-firstname"></div>
+          <div class="form-group"><label>Nom</label><input type="text" id="prof-lastname"></div>
+        </div>
+        <div class="form-group"><label>Adresse e-mail</label><input type="email" id="prof-email"></div>
+        <div class="form-group"><label>Nouveau mot de passe (laisser vide pour ne pas changer)</label><input type="password" id="prof-pwd" placeholder="••••••••"></div>
+        <div class="btn-group">
+          <button class="btn-save" onclick="saveProfile()">Enregistrer</button>
+          <button class="btn-danger" onclick="deleteAccount()">Supprimer le compte</button>
+        </div>
+      </div>
+      <!-- Orders section -->
+      <div class="profile-section" id="ps-orders">
+        <h3>Mes commandes</h3>
+        <p class="section-desc">Historique de vos achats</p>
+        <div id="orders-list"></div>
+      </div>
+      <!-- Favs section in profile -->
+      <div class="profile-section" id="ps-favs">
+        <h3>Mes favoris</h3>
+        <p class="section-desc">Vos produits sauvegardés</p>
+        <div class="products-grid" id="profile-fav-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="logo" onclick="goPage('home')">Perfect<span>SMELL</span></a>
+      <p>Votre destination beauté de confiance. Parfums et cosmétiques soigneusement sélectionnés pour sublimer chaque instant.</p>
+      <div class="footer-social-links">
+        <a class="social-link" href="#" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M20.947 8.305a6.53 6.53 0 0 0-.419-2.216 4.61 4.61 0 0 0-2.633-2.633 6.606 6.606 0 0 0-2.186-.42c-.962-.043-1.267-.055-3.709-.055s-2.755 0-3.71.055a6.606 6.606 0 0 0-2.185.42 4.607 4.607 0 0 0-2.633 2.633 6.554 6.554 0 0 0-.419 2.185c-.043.963-.056 1.268-.056 3.71s0 2.754.056 3.71c.015.748.156 1.486.419 2.187a4.61 4.61 0 0 0 2.634 2.632 6.584 6.584 0 0 0 2.185.45c.963.043 1.268.056 3.71.056s2.755 0 3.71-.056a6.59 6.59 0 0 0 2.186-.419 4.615 4.615 0 0 0 2.633-2.633c.263-.7.404-1.438.419-2.187.043-.962.056-1.267.056-3.71-.002-2.442-.002-2.752-.058-3.709zm-8.953 8.297c-2.554 0-4.623-2.069-4.623-4.623s2.069-4.623 4.623-4.623a4.623 4.623 0 0 1 0 9.246zm4.807-8.339a1.077 1.077 0 1 1 2.155 0 1.077 1.077 0 0 1-2.155 0z"/><circle cx="11.994" cy="11.979" r="3.003"/></svg>
+        </a>
+        <a class="social-link" href="#" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Parfums</h4>
+      <ul>
+        <li><a onclick="goPage('edp-femme')">EDP Femme</a></li>
+        <li><a onclick="goPage('edt-femme')">EDT Femme</a></li>
+        <li><a onclick="goPage('edp-homme')">EDP Homme</a></li>
+        <li><a onclick="goPage('edt-homme')">EDT Homme</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a>06-22-88-15-55</a></li>
+        <li><a>HolyShop@contact.fr</a></li>
+        <li><a>6 rue de l'industrie</a></li>
+        <li><a>75016 Paris</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Horaires</h4>
+      <ul>
+        <li><a>Lun – Ven : 8h–18h</a></li>
+        <li><a>Samedi : 8h–12h</a></li>
+        <li><a style="color:var(--red)">Dimanche : Fermé</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 HolyShop · Tous droits réservés</span>
+    <span>Paiement sécurisé · Livraison offerte dès 50€</span>
+  </div>
+</footer>
+
+<!-- CHECKOUT SUCCESS MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal success-modal">
+    <span class="modal-close" onclick="closeModal()">×</span>
+    <div class="success-icon">✓</div>
+    <h3>Commande confirmée !</h3>
+    <p style="color:var(--muted);margin:12px 0">Merci pour votre achat. Vous recevrez une confirmation par e-mail.</p>
+    <button class="btn-primary" style="margin-top:16px" onclick="closeModal();goPage('home')">Continuer mes achats</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT — DATABASE + LOGIC
+     ============================================================ -->
+<script>
+/* =========================================================
+   DATABASE (localStorage)
+   ========================================================= */
+const DB = {
+  get(k){try{return JSON.parse(localStorage.getItem('hs_'+k))||null}catch{return null}},
+  set(k,v){localStorage.setItem('hs_'+k,JSON.stringify(v))},
+  del(k){localStorage.removeItem('hs_'+k)}
+};
+
+/* PRODUCTS CATALOG */
+const PRODUCTS = [
+  // EDP FEMME
+  {id:1,cat:'edp-femme',brand:'Chopard',name:'Oud Malaki',sub:'Eau de Parfum pour femme',price:56.60,img:'https://cdn.notinoimg.com/list_2k//chopard/8005969000017_01-o.jpg',badge:'Bestseller'},
+  {id:2,cat:'edp-femme',brand:'Boucheron',name:'Quatre',sub:'Eau de Parfum pour femme 70ml',price:22.00,img:'https://cdn.notinoimg.com/list_2k//boucheron/3386460066075_02-o__150714.jpg'},
+  {id:3,cat:'edp-femme',brand:'Lancôme',name:'La Vie Est Belle',sub:'Eau de Parfum pour femme',price:68.00,img:'https://cdn.notinoimg.com/list_2k//lancome/3614272380752_01-o.jpg',badge:'Nouveau'},
+  {id:4,cat:'edp-femme',brand:'Chanel',name:'N°5',sub:'Eau de Parfum 50ml',price:95.00,img:'https://cdn.notinoimg.com/list_2k//chanel/3145891205804_01-o.jpg'},
+  {id:5,cat:'edp-femme',brand:'Dior',name:'Miss Dior',sub:'Eau de Parfum pour femme',price:88.00,img:'https://cdn.notinoimg.com/list_2k//christian-dior/3348900600232_01-o.jpg'},
+  {id:6,cat:'edp-femme',brand:'Givenchy',name:'L\'Interdit',sub:'Eau de Parfum',price:62.00,img:'https://cdn.notinoimg.com/list_2k//givenchy/3274872427327_01-o.jpg'},
+  // EDT FEMME
+  {id:7,cat:'edt-femme',brand:'Cerruti',name:'1881 Pour Femme',sub:'Eau de Toilette pour femme',price:45.00,img:'https://cdn.notinoimg.com/list_2k//cerruti/crtpfnw_aedt10_02-o__130109.jpg'},
+  {id:8,cat:'edt-femme',brand:'Lacoste',name:'Touch of Pink',sub:'Eau de Toilette',price:38.00,img:'https://cdn.notinoimg.com/list_2k//lacoste/3386460067485_01-o.jpg'},
+  {id:9,cat:'edt-femme',brand:'Cacharel',name:'Amor Amor',sub:'Eau de Toilette pour femme',price:34.00,img:'https://cdn.notinoimg.com/list_2k//cacharel/3360374039890_01-o.jpg'},
+  {id:10,cat:'edt-femme',brand:'Paco Rabanne',name:'Olympéa',sub:'Eau de Toilette',price:52.00,img:'https://cdn.notinoimg.com/list_2k//paco-rabanne/3349668549879_01-o.jpg'},
+  // EDP HOMME
+  {id:11,cat:'edp-homme',brand:'Afnan',name:'Turathi Homme Blue',sub:'Eau de Parfum pour homme 90ml',price:40.00,img:'https://cdn.notinoimg.com/list_2k//afnan/6290171070580_01-o__211006.jpg'},
+  {id:12,cat:'edp-homme',brand:'Dior',name:'Sauvage',sub:'Eau de Parfum pour homme',price:89.00,img:'https://cdn.notinoimg.com/list_2k//christian-dior/3348901486369_01-o.jpg',badge:'Top vente'},
+  {id:13,cat:'edp-homme',brand:'Yves Saint Laurent',name:'Y Le Parfum',sub:'Eau de Parfum',price:78.00,img:'https://cdn.notinoimg.com/list_2k//yves-saint-laurent/3614272824997_01-o.jpg'},
+  {id:14,cat:'edp-homme',brand:'Bleu de Chanel',name:'Bleu de Chanel',sub:'Eau de Parfum 100ml',price:105.00,img:'https://cdn.notinoimg.com/list_2k//chanel/3145891075957_01-o.jpg'},
+  {id:15,cat:'edp-homme',brand:'Azzaro',name:'Chrome',sub:'Eau de Parfum',price:46.00,img:'https://cdn.notinoimg.com/list_2k//azzaro/3351501007851_01-o.jpg'},
+  {id:16,cat:'edp-homme',brand:'Giorgio Armani',name:'Acqua di Giò',sub:'Eau de Parfum pour homme',price:74.00,img:'https://cdn.notinoimg.com/list_2k//giorgio-armani/3614272834612_01-o.jpg'},
+  // EDT HOMME
+  {id:17,cat:'edt-homme',brand:'Lacoste',name:'Essential',sub:'Eau de Toilette pour homme',price:32.00,img:'https://cdn.notinoimg.com/list_2k//lacoste/3386460067478_01-o.jpg'},
+  {id:18,cat:'edt-homme',brand:'Hugo Boss',name:'Boss Bottled',sub:'Eau de Toilette',price:48.00,img:'https://cdn.notinoimg.com/list_2k//hugo-boss/0737052145397_01-o.jpg'},
+  {id:19,cat:'edt-homme',brand:'Paco Rabanne',name:'1 Million',sub:'Eau de Toilette 100ml',price:65.00,img:'https://cdn.notinoimg.com/list_2k//paco-rabanne/3349668507909_01-o.jpg'},
+  {id:20,cat:'edt-homme',brand:'Versace',name:'Eros',sub:'Eau de Toilette pour homme',price:55.00,img:'https://cdn.notinoimg.com/list_2k//versace/8011003818235_01-o.jpg'},
+  // MAQUILLAGE
+  {id:21,cat:'maquillage',brand:'MUA Makeup Academy',name:'Professional 5 Shade Palette',sub:'Palette de fards à paupières',price:7.00,img:'https://cdn.notinoimg.com/list_2k//mua-makeup-academy/5055402980011_01-o__221018.jpg'},
+  {id:22,cat:'maquillage',brand:'NYX',name:'Epic Ink Liner',sub:'Eyeliner waterproof',price:9.50,img:'https://cdn.notinoimg.com/list_2k//nyx-professional-makeup/800897108663_01-o.jpg'},
+  {id:23,cat:'maquillage',brand:'Rimmel London',name:'Stay Matte',sub:'Fond de teint fixateur',price:8.00,img:'https://cdn.notinoimg.com/list_2k//rimmel/3607345011164_01-o.jpg'},
+  {id:24,cat:'maquillage',brand:'Maybelline',name:'Fit Me',sub:'Fond de teint fluide',price:12.50,img:'https://cdn.notinoimg.com/list_2k//maybelline-new-york/3600530621873_01-o.jpg'},
+];
+
+const CAT_INFO = {
+  'edp-femme':{label:'Parfum Femme',title:'Eau de Parfum pour Femme'},
+  'edt-femme':{label:'Parfum Femme',title:'Eau de Toilette pour Femme'},
+  'edp-homme':{label:'Parfum Homme',title:'Eau de Parfum pour Homme'},
+  'edt-homme':{label:'Parfum Homme',title:'Eau de Toilette pour Homme'},
+  'maquillage':{label:'Maquillage',title:'Maquillage & Beauté'},
+};
+
+let currentCat = null;
+let currentUser = null;
+
+/* =========================================================
+   INIT
+   ========================================================= */
+function init(){
+  currentUser = DB.get('user');
+  updateNavState();
+  renderFeatured();
+  renderHomme();
+  updateBadges();
+}
+
+function updateNavState(){
+  const label = document.getElementById('nav-account-label');
+  if(currentUser){
+    label.textContent = currentUser.firstname || 'Mon compte';
+    updateProfileSidebar();
+  } else {
+    label.textContent = 'Se connecter';
+  }
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const catPages = ['edp-femme','edt-femme','edp-homme','edt-homme','maquillage'];
+  if(catPages.includes(id)){
+    currentCat = id;
+    renderCategoryPage(id);
+    document.getElementById('page-category').classList.add('active');
+  } else if(id==='cart'){
+    renderCart();
+    document.getElementById('page-cart').classList.add('active');
+  } else if(id==='favorites'){
+    renderFavorites();
+    document.getElementById('page-favorites').classList.add('active');
+  } else if(id==='profile'){
+    if(!currentUser){goPage('login');return}
+    updateProfileSidebar();
+    renderOrders();
+    renderProfileFavs();
+    document.getElementById('page-profile').classList.add('active');
+  } else {
+    const el = document.getElementById('page-'+id);
+    if(el) el.classList.add('active');
+    else document.getElementById('page-home').classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+function doSearch(){
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  if(!q) return;
+  const results = PRODUCTS.filter(p=>
+    p.name.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q)||p.sub.toLowerCase().includes(q)
+  );
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  currentCat = '_search';
+  document.getElementById('cat-title').textContent = `Résultats pour "${q}"`;
+  document.getElementById('cat-breadcrumb').textContent = 'Recherche';
+  document.getElementById('brand-filters').innerHTML = '';
+  document.getElementById('cat-count').textContent = results.length + ' produit(s)';
+  document.getElementById('cat-grid').innerHTML = results.length ? results.map(productCard).join('') : '<p style="color:var(--muted);padding:20px">Aucun résultat trouvé.</p>';
+  document.getElementById('page-category').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* =========================================================
+   RENDER HELPERS
+   ========================================================= */
+function productCard(p){
+  const favs = DB.get('favorites')||[];
+  const isFav = favs.includes(p.id);
+  return `<div class="product-card">
+    ${p.badge?`<div class="product-badge">${p.badge}</div>`:''}
+    <img class="product-card-img" src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/200x200?text=Photo'">
+    <div class="product-card-body">
+      <div class="product-card-brand">${p.brand}</div>
+      <div class="product-card-name">${p.name}</div>
+      <div class="product-card-sub">${p.sub}</div>
+      <div class="product-card-footer">
+        <span class="product-price">${p.price.toFixed(2).replace('.',',')}€</span>
+        <div class="product-actions">
+          <button class="btn-heart ${isFav?'active':''}" onclick="toggleFav(${p.id},this)" title="${isFav?'Retirer des favoris':'Ajouter aux favoris'}">
+            <svg viewBox="0 0 24 24"><path d="m12.75 20.66 6.184-7.098c2.677-2.884 2.559-6.506.754-8.705-.898-1.095-2.206-1.816-3.72-1.855-1.293-.034-2.652.43-3.963 1.442-1.315-1.012-2.678-1.476-3.973-1.442-1.515.04-2.825.76-3.724 1.855-1.806 2.201-1.915 5.823.772 8.706l6.183 7.097c.19.216.46.34.743.34a.985.985 0 0 0 .743-.34Z"/></svg>
+          </button>
+          <button class="btn-cart" onclick="addToCart(${p.id})">+ Panier</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderFeatured(){
+  const featured = PRODUCTS.filter(p=>p.cat==='edp-femme'||p.cat==='maquillage').slice(0,8);
+  document.getElementById('featured-grid').innerHTML = featured.map(productCard).join('');
+}
+function renderHomme(){
+  const h = PRODUCTS.filter(p=>p.cat==='edp-homme').slice(0,4);
+  document.getElementById('homme-grid').innerHTML = h.map(productCard).join('');
+}
+
+/* =========================================================
+   CATEGORY PAGE
+   ========================================================= */
+function renderCategoryPage(catId){
+  const info = CAT_INFO[catId]||{label:catId,title:catId};
+  document.getElementById('cat-title').textContent = info.title;
+  document.getElementById('cat-breadcrumb').textContent = info.label;
+  // Brand filters
+  const brands = [...new Set(PRODUCTS.filter(p=>p.cat===catId).map(p=>p.brand))];
+  document.getElementById('brand-filters').innerHTML = brands.map((b,i)=>
+    `<div class="filter-opt"><input type="checkbox" id="b${i}" value="${b}" onchange="applyFilters()"><label for="b${i}">${b}</label></div>`
+  ).join('');
+  applyFilters();
+}
+
+function applyFilters(){
+  if(currentCat==='_search') return;
+  let prods = PRODUCTS.filter(p=>p.cat===currentCat);
+  // Brand filter
+  const checkedBrands = [...document.querySelectorAll('#brand-filters input:checked')].map(i=>i.value);
+  if(checkedBrands.length) prods = prods.filter(p=>checkedBrands.includes(p.brand));
+  // Price filter
+  const p1=document.getElementById('p1')?.checked;
+  const p2=document.getElementById('p2')?.checked;
+  const p3=document.getElementById('p3')?.checked;
+  if(p1||p2||p3){
+    prods = prods.filter(p=>{
+      if(p1&&p.price<30) return true;
+      if(p2&&p.price>=30&&p.price<=60) return true;
+      if(p3&&p.price>60) return true;
+      return false;
+    });
+  }
+  // Sort
+  const sort = document.getElementById('sort-sel')?.value;
+  if(sort==='price-asc') prods.sort((a,b)=>a.price-b.price);
+  else if(sort==='price-desc') prods.sort((a,b)=>b.price-a.price);
+  else if(sort==='alpha') prods.sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('cat-count').textContent = prods.length + ' produit(s)';
+  document.getElementById('cat-grid').innerHTML = prods.map(productCard).join('');
+}
+
+/* =========================================================
+   CART
+   ========================================================= */
+function getCart(){ return DB.get('cart')||[]; }
+function saveCart(c){ DB.set('cart',c); updateBadges(); }
+
+function addToCart(prodId){
+  const p = PRODUCTS.find(x=>x.id===prodId);
+  if(!p) return;
+  let cart = getCart();
+  const existing = cart.find(i=>i.id===prodId);
+  if(existing) existing.qty++;
+  else cart.push({id:prodId,qty:1});
+  saveCart(cart);
+  showToast(`${p.brand} ${p.name} ajouté au panier`,'success');
+}
+
+function renderCart(){
+  const cart = getCart();
+  const container = document.getElementById('cart-items-container');
+  if(!cart.length){
+    container.innerHTML=`<div class="empty-state">
+      <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M14 7h-4v3a1 1 0 0 1-2 0V7H6a1 1 0 0 0-.997.923l-.917 11.924A2 2 0 0 0 6.08 22h11.84a2 2 0 0 0 1.994-2.153l-.917-11.924A1 1 0 0 0 18 7h-2v3a1 1 0 1 1-2 0V7Zm-2-3a2 2 0 0 0-2 2v1H8V6a4 4 0 0 1 8 0v1h-2V6a2 2 0 0 0-2-2Z" clip-rule="evenodd"/></svg>
+      <h3>Votre panier est vide</h3>
+      <p>Découvrez nos produits et ajoutez-en à votre panier.</p>
+      <button class="btn-primary" onclick="goPage('home')">Découvrir nos produits</button>
+    </div>`;
+    document.getElementById('cart-summary-card').style.visibility='hidden';
+    return;
+  }
+  document.getElementById('cart-summary-card').style.visibility='visible';
+  let total=0;
+  container.innerHTML = cart.map(item=>{
+    const p = PRODUCTS.find(x=>x.id===item.id);
+    if(!p) return '';
+    const sub = p.price*item.qty;
+    total += sub;
+    return `<div class="cart-item">
+      <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/80'">
+      <div class="cart-item-info">
+        <div class="cart-item-brand">${p.brand}</div>
+        <div class="cart-item-name">${p.name}</div>
+        <div class="cart-item-sub">${p.sub}</div>
+        <div class="cart-item-actions">
+          <div class="qty-ctrl">
+            <button onclick="changeQty(${p.id},-1)">−</button>
+            <span class="qty-val">${item.qty}</span>
+            <button onclick="changeQty(${p.id},1)">+</button>
+          </div>
+          <button class="btn-remove" onclick="removeFromCart(${p.id})">Supprimer</button>
+        </div>
+      </div>
+      <div class="cart-item-price">${sub.toFixed(2).replace('.',',')}€</div>
+    </div>`;
+  }).join('');
+  const formatted = total.toFixed(2).replace('.',',')+'€';
+  document.getElementById('subtotal').textContent = formatted;
+  document.getElementById('cart-total').textContent = formatted;
+}
+
+function changeQty(prodId, delta){
+  let cart = getCart();
+  const item = cart.find(i=>i.id===prodId);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty<=0) cart = cart.filter(i=>i.id!==prodId);
+  saveCart(cart);
+  renderCart();
+}
+
+function removeFromCart(prodId){
+  let cart = getCart().filter(i=>i.id!==prodId);
+  saveCart(cart);
+  renderCart();
+  showToast('Produit retiré du panier');
+}
+
+function checkout(){
+  const cart = getCart();
+  if(!cart.length){showToast('Votre panier est vide','error');return;}
+  // Save order history
+  const orders = DB.get('orders')||[];
+  orders.push({date:new Date().toLocaleDateString('fr-FR'),items:cart});
+  DB.set('orders',orders);
+  DB.set('cart',[]);
+  updateBadges();
+  document.getElementById('checkout-modal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('checkout-modal').classList.remove('open');
+  renderCart();
+}
+
+/* =========================================================
+   FAVORITES
+   ========================================================= */
+function getFavs(){ return DB.get('favorites')||[]; }
+
+function toggleFav(prodId, btn){
+  let favs = getFavs();
+  const idx = favs.indexOf(prodId);
+  if(idx>-1){
+    favs.splice(idx,1);
+    btn.classList.remove('active');
+    showToast('Retiré des favoris');
+  } else {
+    favs.push(prodId);
+    btn.classList.add('active');
+    const p = PRODUCTS.find(x=>x.id===prodId);
+    showToast(`${p?p.brand+' '+p.name:''} ajouté aux favoris`,'success');
+  }
+  DB.set('favorites',favs);
+  updateBadges();
+}
+
+function renderFavorites(){
+  const favs = getFavs();
+  const grid = document.getElementById('fav-grid');
+  const empty = document.getElementById('fav-empty');
+  const prods = PRODUCTS.filter(p=>favs.includes(p.id));
+  if(!prods.length){
+    grid.innerHTML='';
+    empty.style.display='block';
+  } else {
+    grid.innerHTML = prods.map(productCard).join('');
+    empty.style.display='none';
+  }
+}
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+function updateBadges(){
+  const cart = getCart();
+  const favs = getFavs();
+  const cartTotal = cart.reduce((s,i)=>s+i.qty,0);
+  const cartBadge = document.getElementById('cart-badge');
+  const favBadge = document.getElementById('fav-badge');
+  if(cartTotal>0){cartBadge.style.display='flex';cartBadge.textContent=cartTotal}
+  else cartBadge.style.display='none';
+  if(favs.length>0){favBadge.style.display='flex';favBadge.textContent=favs.length}
+  else favBadge.style.display='none';
+}
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const pwd = document.getElementById('login-pwd').value;
+  if(!email||!pwd){showToast('Veuillez remplir tous les champs','error');return;}
+  const users = DB.get('users')||[];
+  const user = users.find(u=>u.email===email&&u.password===pwd);
+  if(!user){showToast('Email ou mot de passe incorrect','error');return;}
+  DB.set('user',user);
+  currentUser = user;
+  updateNavState();
+  showToast(`Bienvenue ${user.firstname} !`,'success');
+  goPage('home');
+}
+
+function doRegister(){
+  const firstname = document.getElementById('reg-firstname').value.trim();
+  const lastname = document.getElementById('reg-lastname').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pwd = document.getElementById('reg-pwd').value;
+  const pwd2 = document.getElementById('reg-pwd2').value;
+  if(!firstname||!lastname||!email||!pwd){showToast('Veuillez remplir tous les champs','error');return;}
+  if(pwd!==pwd2){showToast('Les mots de passe ne correspondent pas','error');return;}
+  if(pwd.length<6){showToast('Mot de passe trop court (min. 6 caractères)','error');return;}
+  const users = DB.get('users')||[];
+  if(users.find(u=>u.email===email)){showToast('Cet e-mail est déjà utilisé','error');return;}
+  const newUser = {firstname,lastname,email,password:pwd};
+  users.push(newUser);
+  DB.set('users',users);
+  DB.set('user',newUser);
+  currentUser = newUser;
+  updateNavState();
+  showToast('Compte créé avec succès ! Bienvenue 🎉','success');
+  goPage('home');
+}
+
+function doLogout(){
+  DB.del('user');
+  currentUser = null;
+  updateNavState();
+  showToast('Déconnecté avec succès');
+  goPage('home');
+}
+
+function deleteAccount(){
+  if(!confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')) return;
+  const users = (DB.get('users')||[]).filter(u=>u.email!==currentUser.email);
+  DB.set('users',users);
+  DB.del('user');
+  currentUser = null;
+  updateNavState();
+  showToast('Compte supprimé');
+  goPage('home');
+}
+
+/* =========================================================
+   FORGOT PASSWORD
+   ========================================================= */
+let forgotCode = null;
+let forgotEmail = null;
+
+function forgotStep1(){
+  const email = document.getElementById('forgot-email').value.trim();
+  if(!email){showToast('Entrez votre adresse e-mail','error');return;}
+  const users = DB.get('users')||[];
+  if(!users.find(u=>u.email===email)){showToast('Aucun compte trouvé avec cet e-mail','error');return;}
+  // Generate fake code
+  forgotCode = Math.random().toString(36).substring(2,10).toUpperCase();
+  forgotEmail = email;
+  showToast(`Code simulé : ${forgotCode} (en production, envoyé par e-mail)`,'success');
+  document.getElementById('forgot-step1').style.display='none';
+  document.getElementById('forgot-step2').style.display='block';
+  document.getElementById('step2-ind').classList.add('active');
+}
+
+function forgotStep2(){
+  const code = document.getElementById('forgot-code').value.trim().toUpperCase();
+  const pwd = document.getElementById('forgot-newpwd').value;
+  const pwd2 = document.getElementById('forgot-newpwd2').value;
+  if(code!==forgotCode){showToast('Code incorrect','error');return;}
+  if(pwd!==pwd2){showToast('Les mots de passe ne correspondent pas','error');return;}
+  if(pwd.length<6){showToast('Mot de passe trop court','error');return;}
+  const users = DB.get('users')||[];
+  const user = users.find(u=>u.email===forgotEmail);
+  if(user) user.password = pwd;
+  DB.set('users',users);
+  showToast('Mot de passe modifié avec succès !','success');
+  goPage('login');
+  // Reset
+  document.getElementById('forgot-step1').style.display='block';
+  document.getElementById('forgot-step2').style.display='none';
+  document.getElementById('step2-ind').classList.remove('active');
+  forgotCode=null; forgotEmail=null;
+}
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+function updateProfileSidebar(){
+  if(!currentUser) return;
+  document.getElementById('profile-avatar-letter').textContent = (currentUser.firstname||'?')[0].toUpperCase();
+  document.getElementById('profile-sidebar-name').textContent = (currentUser.firstname||'')+' '+(currentUser.lastname||'');
+  document.getElementById('profile-sidebar-email').textContent = currentUser.email||'';
+  document.getElementById('prof-firstname').value = currentUser.firstname||'';
+  document.getElementById('prof-lastname').value = currentUser.lastname||'';
+  document.getElementById('prof-email').value = currentUser.email||'';
+}
+
+function showProfileSection(id, btn){
+  document.querySelectorAll('.profile-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.profile-nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ps-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+function saveProfile(){
+  if(!currentUser) return;
+  const f = document.getElementById('prof-firstname').value.trim();
+  const l = document.getElementById('prof-lastname').value.trim();
+  const e = document.getElementById('prof-email').value.trim();
+  const p = document.getElementById('prof-pwd').value;
+  if(!f||!l||!e){showToast('Veuillez remplir tous les champs','error');return;}
+  const users = DB.get('users')||[];
+  const user = users.find(u=>u.email===currentUser.email);
+  if(user){
+    user.firstname=f; user.lastname=l; user.email=e;
+    if(p) user.password=p;
+    DB.set('users',users);
+    DB.set('user',user);
+    currentUser=user;
+    updateNavState();
+    updateProfileSidebar();
+    showToast('Profil mis à jour','success');
+  }
+}
+
+function renderOrders(){
+  const orders = DB.get('orders')||[];
+  const list = document.getElementById('orders-list');
+  if(!orders.length){list.innerHTML='<p style="color:var(--muted)">Aucune commande pour le moment.</p>';return;}
+  list.innerHTML = orders.reverse().map(o=>`
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Commande du ${o.date}</div>
+      ${o.items.map(item=>{
+        const p = PRODUCTS.find(x=>x.id===item.id);
+        return p?`<div class="order-item">
+          <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/60'">
+          <div class="order-info">
+            <div class="order-name">${p.brand} — ${p.name}</div>
+            <div class="order-sub">${p.sub} · Qté: ${item.qty}</div>
+          </div>
+          <div class="order-price">${(p.price*item.qty).toFixed(2).replace('.',',')}€</div>
+        </div>`:'';
+      }).join('')}
+    </div>
+  `).join('<hr style="border:none;border-top:1px solid var(--cream2);margin:16px 0">');
+}
+
+function renderProfileFavs(){
+  const favs = getFavs();
+  const prods = PRODUCTS.filter(p=>favs.includes(p.id));
+  document.getElementById('profile-fav-grid').innerHTML = prods.length
+    ? prods.map(productCard).join('')
+    : '<p style="color:var(--muted)">Aucun favori pour le moment.</p>';
+}
+
+/* =========================================================
+   TOAST NOTIFICATIONS
+   ========================================================= */
+function showToast(msg, type=''){
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast '+(type||'');
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(30px)';t.style.transition='.3s';setTimeout(()=>t.remove(),300)},3000);
+}
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+init();
+</script>
+</body>
+</html>
